@@ -1,0 +1,15 @@
+﻿这是学科学解决方案的核心库文件。
+
+包含类类型：
+
+	People 用户基类型
+		User 用户
+		Empoylee 员工
+	Department 部门
+	Subject 试题
+	Knowledge 知识
+	Answer 成绩
+	DataOperate 数据操作
+
+枚举类型
+	Grade 年级
