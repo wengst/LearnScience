@@ -1,6 +1,6 @@
 using System;
 
-namespace LearnScience.Web.Models
+namespace LS.Web.Models
 {
     public class ErrorViewModel
     {

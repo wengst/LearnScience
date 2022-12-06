@@ -23,6 +23,8 @@ namespace LS.DAL
         public DbSet<Commodity> Commodities { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Purview> Purviews { get; set; }
+        public DbSet<Verify> Verifies { get; set; }
+
 
         public DbSet<TestPaper> TestPapers { get; set; }
         public DbSet<Subject> Subjects { get; set; }
@@ -66,6 +68,7 @@ namespace LS.DAL
                 user.Property(p => p.VipStart).HasColumnType<DateTime>(D.T_DATETIME).HasColumnName(D.f9).IsRequired(false);
                 user.Property(p => p.VipEnd).HasColumnType<DateTime>(D.T_DATETIME).HasColumnName(D.f10).IsRequired(false);
                 user.Property(p => p.VipLevel).HasColumnType<int>(D.T_INT).HasColumnName(D.f11).IsRequired(false);
+                user.Property(p => p.EMailConfirmed).HasColumnType(D.T_BIT).HasColumnName(D.f12).IsRequired().HasDefaultValue(false);
             });
 
             modelBuilder.Entity<User>().HasData(
@@ -170,6 +173,7 @@ namespace LS.DAL
                 t.Property(p => p.IsConfirm).HasColumnType(D.T_BIT).HasColumnName(D.f9);
                 t.Property(p => p.PayAccount).HasColumnType(D.T_NVARCHAR32).HasColumnName(D.f10);
                 t.Property(p => p.PayImageUrl).HasColumnType(D.T_VARCHAR128).HasColumnName(D.f11);
+                t.Property(P => P.UserId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f12);
             });
 
             //t6
@@ -278,7 +282,7 @@ namespace LS.DAL
                 t.Property(p => p.TextAnalyze).HasColumnType(D.T_NTEXT).HasColumnName(D.f6);
                 t.Property(p => p.TextContent).HasColumnType(D.T_NTEXT).HasColumnName(D.f7);
                 t.Property(p => p.IsAccept).HasColumnType(D.T_BIT).HasColumnName(D.f8);
-                t.Property(p => p.ReViewer).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f9);
+                t.Property(p => p.ReViewerId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f9);
                 t.Property(p => p.ReViewTime).HasColumnType(D.T_DATETIME).HasColumnName(D.f10);
                 t.Property(p => p.Reason).HasColumnType(D.T_NVARCHAR32).HasMaxLength(32).HasColumnName(D.f11);
             });
@@ -311,7 +315,7 @@ namespace LS.DAL
                 t.Property(p => p.Stat).HasColumnType<ReleaseStats>(D.T_INT).HasColumnName(D.f7);
                 t.Property(p => p.IsAccept).HasColumnType(D.T_BIT).HasColumnName(D.f8);
                 t.Property(p => p.Reason).HasColumnType(D.T_NVARCHAR64).HasMaxLength(64).HasColumnName(D.f9);
-                t.Property(p => p.ReViewer).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f10);
+                t.Property(p => p.ReViewerId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f10);
                 t.Property(p => p.ReViewTime).HasColumnType(D.T_DATETIME).HasColumnName(D.f11);
             });
 
@@ -333,7 +337,8 @@ namespace LS.DAL
                 Knowledge.Create("1000", "实验", "探究和实验", AbilityLeveles.未评估),
                 Knowledge.Create("2000", "生物", "植物、动物、生理卫生", AbilityLeveles.未评估),
                 Knowledge.Create("3000", "化学", "物质变化的科学，化学", AbilityLeveles.未评估),
-                Knowledge.Create("4000", "物理", "机械运动、力、声、电、光、磁", AbilityLeveles.未评估)
+                Knowledge.Create("4000", "物理", "机械运动、力、声、电、光、磁", AbilityLeveles.未评估),
+                Knowledge.Create("5000", "地理", "自然地理", AbilityLeveles.未评估)
             );
 
             //t17
@@ -373,6 +378,47 @@ namespace LS.DAL
                 t.ToTable(D.t19);
                 t.Property(p => p.TeacherId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f0);
                 t.Property(p => p.Introduction).HasColumnType(D.T_NTEXT).HasColumnName(D.f1);
+            });
+
+            //t20
+            modelBuilder.Entity<Article>(t =>
+            {
+                t.ToTable(D.t20);
+                t.Property(p => p.Id).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f0);
+                t.Property(p => p.AuthId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f1);
+                t.Property(p => p.KnowledgeId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f2);
+                t.Property(p => p.Title).HasColumnType(D.T_NVARCHAR64).HasMaxLength(64).HasColumnName(D.f3);
+                t.Property(p => p.Content).HasColumnType(D.T_NTEXT).HasColumnName(D.f4);
+                t.Property(p => p.ReleaseTime).HasColumnType(D.T_DATETIME).HasColumnName(D.f5);
+                t.Property(p => p.SubTitle).HasColumnType(D.T_NVARCHAR64).HasColumnName(D.f6);
+            });
+
+            //t21
+            modelBuilder.Entity<ArticleReView>(t =>
+            {
+                t.ToTable(D.t21);
+                t.Property(p => p.Id).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f0);
+                t.Property(p => p.AuthId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f1);
+                t.Property(p => p.KnowledgeId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f2);
+                t.Property(p => p.Title).HasColumnType(D.T_NVARCHAR64).HasMaxLength(64).HasColumnName(D.f3);
+                t.Property(p => p.Content).HasColumnType(D.T_NTEXT).HasColumnName(D.f4);
+                t.Property(p => p.ReleaseTime).HasColumnType(D.T_DATETIME).HasColumnName(D.f5);
+                t.Property(p => p.SubTitle).HasColumnType(D.T_NVARCHAR64).HasColumnName(D.f6);
+                t.Property(p => p.ReViewerId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f7);
+                t.Property(p => p.IsAccept).HasColumnType(D.T_BIT).HasColumnName(D.f8);
+                t.Property(p => p.ReViewTime).HasColumnType(D.T_DATETIME).HasColumnName(D.f9);
+                t.Property(p => p.Reason).HasColumnType(D.T_NVARCHAR64).HasMaxLength(64).HasColumnName(D.f10);
+            });
+
+            //t22
+            modelBuilder.Entity<Verify>(t =>
+            {
+                t.ToTable(D.t22);
+                t.Property(p => p.UserId).HasColumnType<Guid>(D.T_GUID).HasColumnName(D.f0);
+                t.Property(p => p.Way).HasColumnType<VerifyWay>(D.T_TINYINT).HasColumnName(D.f1);
+                t.Property(p => p.LimitMinutes).HasColumnType(D.T_SMALLINT).HasColumnName(D.f2);
+                t.Property(p => p.Sendto).HasColumnType(D.T_NVARCHAR128).HasColumnName(D.f3);
+                t.Property(p => p.md5).HasColumnType(D.T_VARCHAR32).HasColumnName(D.f4);
             });
         }
     }

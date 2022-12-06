@@ -73,6 +73,11 @@ namespace LS.Core
         /// </summary>
         public string EMail { get; set; }
 
+        /// <summary>
+        /// 邮箱已验证
+        /// </summary>
+        public bool EMailConfirmed { get; set; }
+
         public User() { }
 
         public User(string userName, string password, string email)
@@ -246,6 +251,11 @@ namespace LS.Core
         public Guid PaymenterId { get; set; }
 
         /// <summary>
+        /// 使用者Id
+        /// </summary>
+        public Guid UserId { get; set; }
+
+        /// <summary>
         /// 收款者Id
         /// </summary>
         public Guid CollecterId { get; set; }
@@ -299,6 +309,59 @@ namespace LS.Core
         /// 付款截图地址
         /// </summary>
         public string PayImageUrl { get; set; }
+    }
+
+    /// <summary>
+    /// 申请提现
+    /// </summary>
+    public class ApplyCash {
+        /// <summary>
+        /// 提现者Id
+        /// </summary>
+        public Guid UserId { get; set; }
+
+        /// <summary>
+        /// 提现金额
+        /// </summary>
+        public int Amount { get; set; }
+
+        /// <summary>
+        /// 收款途径
+        /// </summary>
+        public PayWays CollectWay { get; set; }
+
+        /// <summary>
+        /// 收款账户
+        /// </summary>
+        public string CollectAccount { get; set; }
+
+        /// <summary>
+        /// 联系方式。
+        /// <para>申请者提供一个联系方式，当提现有问题时联系用。</para>
+        /// </summary>
+        public string Contact { get; set; }
+
+        /// <summary>
+        /// 申请创建日期
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 支付状态
+        /// <para>对于已经打款的申请关键信息将被复制到PayLog表</para>
+        /// </summary>
+        public PayStats Stat { get; set; }
+
+        /// <summary>
+        /// 最后处理日期
+        /// <para>对于已经提现的申请，关键信息将会被复制到PayLog表</para>
+        /// </summary>
+        public DateTime LastTime { get; set; }
+
+        /// <summary>
+        /// 备注信息。所有未能完备表达的信息都可以填写在这里。
+        /// </summary>
+        public string Comment { get; set; }
     }
 
     /// <summary>
@@ -367,5 +430,29 @@ namespace LS.Core
         /// 部门Id。Id=0表示不限部门
         /// </summary>
         public int DepartmentId { get; set; }
+    }
+
+    /// <summary>
+    /// 验证记录
+    /// </summary>
+    public class Verify
+    { 
+        public Guid UserId { get; set; }
+
+        public VerifyWay Way { get; set; } = VerifyWay.Mail;
+
+        public string Sendto { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 限制时长。单位分钟。邮箱验证默认2880分钟，既48小时
+        /// </summary>
+        public int LimitMinutes { get; set; } = 2880;
+
+        /// <summary>
+        /// 如果是邮箱验证，为防止篡改设置了此字段，加在邮件内容的链接中。用于比对用。
+        /// </summary>
+        public string md5 { get; set; }
     }
 }

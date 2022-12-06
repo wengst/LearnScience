@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace LS.Core
 {
     /// <summary>
-    /// 试题组
+    /// 试题组基类
     /// </summary>
-    public class TestPaper
+    public abstract class TestPaper
     {
         /// <summary>
         /// 试题组Id
@@ -24,11 +24,6 @@ namespace LS.Core
         public string Comment { get; set; }
 
         /// <summary>
-        /// 试题集
-        /// </summary>
-        public List<Subject> Subjects { get; } = new List<Subject>();
-
-        /// <summary>
         /// 发布者Id
         /// </summary>
         public Guid AuthId { get; set; }
@@ -44,42 +39,15 @@ namespace LS.Core
         public ReleaseStats Stat { get; set; }
 
         /// <summary>
-        /// 是否免费
-        /// </summary>
-        public bool IsFree
-        {
-            get
-            {
-                return TotalPrice == 0;
-            }
-        }
-
-        /// <summary>
         /// 试题集的价格
         /// </summary>
         public int Price { get; set; }
-
-        /// <summary>
-        /// 试题集总价
-        /// </summary>
-        public int TotalPrice
-        {
-            get
-            {
-                int p = Price;
-                for (int i = 0; i < Subjects.Count; i++)
-                {
-                    p += Subjects[i].Price;
-                }
-                return p;
-            }
-        }
     }
 
     /// <summary>
-    /// 试题
+    /// 试题基类
     /// </summary>
-    public class Subject
+    public abstract class Subject
     {
         /// <summary>
         /// 试题Id
@@ -123,17 +91,12 @@ namespace LS.Core
         /// 价格
         /// </summary>
         public int Price { get; set; }
-
-        /// <summary>
-        /// 试题的小题
-        /// </summary>
-        public List<Question> Questions { get; } = new List<Question>();
     }
 
     /// <summary>
-    /// 试题中的问题
+    /// 试题中的问题基类
     /// </summary>
-    public class Question
+    public abstract class Question
     {
         /// <summary>
         /// 试题Id
@@ -193,6 +156,70 @@ namespace LS.Core
         public string Keys { get; set; }
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////
+    
+
+    /// <summary>
+    /// 发布的问题
+    /// </summary>
+    public class ReleaseQuestion : Question { 
+    
+    }
+
+    /// <summary>
+    /// 发布的试题
+    /// </summary>
+    public class ReleaseSubject : Subject
+    {
+        /// <summary>
+        /// 试题的小题
+        /// </summary>
+        public List<ReleaseQuestion> Questions { get; } = new List<ReleaseQuestion>();
+    }
+
+    /// <summary>
+    /// 发布的试题集
+    /// </summary>
+    public class ReleaseTestPaper : TestPaper
+    {
+        /// <summary>
+        /// 试题集
+        /// </summary>
+        public List<ReleaseSubject> Subjects { get; } = new List<ReleaseSubject>();
+
+        /// <summary>
+        /// 试题集总价
+        /// </summary>
+        public int TotalPrice
+        {
+            get
+            {
+                int p = Price;
+                for (int i = 0; i < Subjects.Count; i++)
+                {
+                    p += Subjects[i].Price;
+                }
+                return p;
+            }
+        }
+
+        /// <summary>
+        /// 是否免费
+        /// </summary>
+        public bool IsFree
+        {
+            get
+            {
+                return TotalPrice == 0;
+            }
+        }
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+    
+    
     /// <summary>
     /// 试题中的问题审核
     /// </summary>
@@ -204,8 +231,12 @@ namespace LS.Core
     /// <summary>
     /// 试题审核
     /// </summary>
-    public class SubjectReView : Subject
+    public class SubjectReView : Subject, IReView
     {
+        /// <summary>
+        /// 待审核的问题
+        /// </summary>
+        public List<QuestionReView> Questions { get; set; }
 
         /// <summary>
         /// 是否通过审核
@@ -225,14 +256,46 @@ namespace LS.Core
         /// <summary>
         /// 审核人
         /// </summary>
-        public Guid ReViewer { get; set; }
+        public Guid ReViewerId { get; set; }
     }
 
     /// <summary>
     /// 试题组的审核
     /// </summary>
-    public class TestPaperReView : TestPaper
+    public class TestPaperReView : TestPaper, IReView
     {
+        /// <summary>
+        /// 待审的试题
+        /// </summary>
+        public List<SubjectReView> Subjects { get; set; }
+
+        /// <summary>
+        /// 试题集总价
+        /// </summary>
+        public int TotalPrice
+        {
+            get
+            {
+                int p = Price;
+                for (int i = 0; i < Subjects.Count; i++)
+                {
+                    p += Subjects[i].Price;
+                }
+                return p;
+            }
+        }
+
+        /// <summary>
+        /// 是否免费
+        /// </summary>
+        public bool IsFree
+        {
+            get
+            {
+                return TotalPrice == 0;
+            }
+        }
+
         /// <summary>
         /// 是否通过审核
         /// </summary>
@@ -251,6 +314,6 @@ namespace LS.Core
         /// <summary>
         /// 审核人
         /// </summary>
-        public Guid ReViewer { get; set; }
+        public Guid ReViewerId { get; set; }
     }
 }

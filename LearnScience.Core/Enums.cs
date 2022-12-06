@@ -143,6 +143,17 @@ namespace LS.Core
     }
 
     /// <summary>
+    /// 收付款状态
+    /// </summary>
+    public enum PayStats
+    {
+        未处理 = 1,
+        正在处理 = 10,
+        已支付 = 100,
+        已收款 = 200
+    }
+
+    /// <summary>
     /// 配对关系
     /// </summary>
     public enum UserRelations
@@ -179,5 +190,17 @@ namespace LS.Core
         理解 = 2,
         掌握 = 3,
         应用 = 4
+    }
+
+    public enum VerifyWay
+    {
+        /// <summary>
+        /// 手机短信验证
+        /// </summary>
+        SMS,
+        /// <summary>
+        /// 邮箱验证
+        /// </summary>
+        Mail
     }
 }

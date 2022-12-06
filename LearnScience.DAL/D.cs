@@ -27,6 +27,11 @@ namespace LS.DAL
         public const string t19 = "ls_table_19";
         public const string t20 = "ls_table_20";
         public const string t21 = "ls_table_21";
+        public const string t22 = "ls_table_22";
+        public const string t23 = "ls_table_23";
+        public const string t24 = "ls_table_24";
+        public const string t25 = "ls_table_25";
+
 
         public const string f0 = "field000";
         public const string f1 = "field001";
@@ -94,5 +99,8 @@ namespace LS.DAL
 
         public const string T_DATE = "DATE";
         public const string T_TIME = "TIME";
+
+        public const int Default_IndexPage = 1;
+        public const int Default_PageSize = 20;
     }
 }

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LearnScience.Web
+namespace LS.Web
 {
     public class Startup
     {
