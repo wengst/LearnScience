@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LS.Core
 {
@@ -67,11 +65,26 @@ namespace LS.Core
     /// <summary>
     /// 发布状态
     /// </summary>
+    [Flags]
     public enum ReleaseStats
     {
-        草稿,
-        发布,
-        过期
+        /// <summary>
+        /// 刚创建的数据处于草稿状态。
+        /// <para>草稿态的数据不能审核</para>
+        /// </summary>
+        草稿 = 1,
+        /// <summary>
+        /// 仓储中的数据对其他用户不可见
+        /// </summary>
+        仓储 = 2,
+        /// <summary>
+        /// 发布的数据对其他用户可见。
+        /// </summary>
+        发布 = 4,
+        /// <summary>
+        /// 被使用的数据会被锁定。锁定的数据不可编辑，但仓储或发布。
+        /// </summary>
+        锁定 = 8
     }
 
     /// <summary>
@@ -192,6 +205,9 @@ namespace LS.Core
         应用 = 4
     }
 
+    /// <summary>
+    /// 验证途径
+    /// </summary>
     public enum VerifyWay
     {
         /// <summary>
